@@ -9,7 +9,6 @@ import dbConfig from './config/db.config';
 
 
 const ENV = process.env.ENV_MODE
-// console.log(ENV)
 @Module({
   imports: [UserModule,
 
@@ -25,6 +24,7 @@ const ENV = process.env.ENV_MODE
         type: "postgres",
         host: configService.get('database.host'),
         port: configService.get('database.port'),
+        database:configService.get('database.name'),
         username: configService.get('database.username'),
         password: configService.get('database.password'),
         synchronize: true,
@@ -34,7 +34,5 @@ const ENV = process.env.ENV_MODE
   ],
   controllers: [AppController],
   providers: [AppService],
-
-  
 })
 export class AppModule { }
