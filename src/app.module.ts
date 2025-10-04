@@ -8,7 +8,7 @@ import appConfig from './config/app.config';
 import dbConfig from './config/db.config';
 
 
-const ENV = process.env.ENV_NODE
+const ENV = process.env.ENV_MODE
 // console.log(ENV)
 @Module({
   imports: [UserModule,
@@ -27,8 +27,8 @@ const ENV = process.env.ENV_NODE
         port: configService.get('database.port'),
         username: configService.get('database.username'),
         password: configService.get('database.password'),
-        synchronize: configService.get('database.synchronize'),
-        autoLoadEntities: configService.get('database.autoLoadEntities'),
+        synchronize: true,
+        autoLoadEntities: true,
       })
     })
   ],
