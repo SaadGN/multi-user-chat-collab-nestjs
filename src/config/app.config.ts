@@ -1,5 +1,5 @@
 import { registerAs } from "@nestjs/config";
 
-export default registerAs('database',() => ({
+export default registerAs('app',() => ({
     environment:  process.env.ENV_MODE || 'production'
 }))

@@ -6,17 +6,18 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import appConfig from './config/app.config';
 import dbConfig from './config/db.config';
+import dotenv from "dotenv";
+dotenv.config()
 
-
-const ENV = process.env.ENV_MODE
 @Module({
   imports: [UserModule,
-
+    
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: !ENV ? '.env' : `.env.${ENV.trim()}`,
+      envFilePath: '.env',
       load: [appConfig, dbConfig],
     }),
+
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -31,6 +32,8 @@ const ENV = process.env.ENV_MODE
         autoLoadEntities: true,
       })
     })
+
+
   ],
   controllers: [AppController],
   providers: [AppService],
