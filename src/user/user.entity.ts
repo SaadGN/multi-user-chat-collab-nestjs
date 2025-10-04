@@ -28,6 +28,13 @@ export class User{
         length:30
     })
     password:string
+    
+    @Column({
+        type:"varchar",
+        nullable:false,
+        length:6
+    })
+    role : string = "ADMIN"
 
     @CreateDateColumn()
     createdAt:Date
