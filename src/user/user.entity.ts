@@ -34,7 +34,7 @@ export class User{
         nullable:false,
         length:6
     })
-    role : string = "ADMIN"
+    role : string = "MEMBER"
 
     @CreateDateColumn()
     createdAt:Date
