@@ -1,17 +1,20 @@
-import { Module } from '@nestjs/common';
+import { Module, OnModuleInit } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { AdminModule } from './admin/admin.module';
 // import appConfig from './config/app.config';
 import dbConfig from './config/db.config';
 import dotenv from "dotenv";
+import { AdminService } from './admin/admin.service';
 dotenv.config()
 
 @Module({
-  imports: [UserModule,
-    
+  imports: [
+    UserModule,
+
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
@@ -25,17 +28,27 @@ dotenv.config()
         type: "postgres",
         host: configService.get('database.host'),
         port: configService.get('database.port'),
-        database:configService.get('database.name'),
+        database: configService.get('database.name'),
         username: configService.get('database.username'),
         password: configService.get('database.password'),
         synchronize: true,
         autoLoadEntities: true,
       })
-    })
+    }),
 
+    AdminModule,
 
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule implements OnModuleInit {
+
+  constructor(
+    private readonly adminService: AdminService
+  ) { }
+
+  async onModuleInit() {
+    await this.adminService.createDefaultAdmin()
+  }
+}
