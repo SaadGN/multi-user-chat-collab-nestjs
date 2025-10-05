@@ -4,7 +4,7 @@ import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import appConfig from './config/app.config';
+// import appConfig from './config/app.config';
 import dbConfig from './config/db.config';
 import dotenv from "dotenv";
 dotenv.config()
@@ -15,7 +15,7 @@ dotenv.config()
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
-      load: [appConfig, dbConfig],
+      load: [dbConfig],
     }),
 
     TypeOrmModule.forRootAsync({
