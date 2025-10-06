@@ -1,48 +1,56 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import * as bcrypt from 'bcrypt';
 
 @Entity()
-export class User{
+export class User {
 
     @PrimaryGeneratedColumn()
-    id:number
+    id: number
 
     @Column({
-        type:"varchar",
-        nullable:false,
-        length:30,
-        unique:true
+        type: "varchar",
+        nullable: false,
+        length: 100,
+        unique: true
     })
-    username:string
+    username: string
 
     @Column({
-        type:"varchar",
-        nullable:false,
-        length:30,
-        unique:true
+        type: "varchar",
+        nullable: false,
+        length: 100,
+        unique: true
     })
-    email:string
+    email: string
 
     @Column({
-        type:"varchar",
-        nullable:false,
-        length:30
+        type: "varchar",
+        nullable: false,
+        length: 100
     })
-    password:string
-    
+    password: string
+
     @Column({
-        type:"varchar",
-        nullable:false,
-        length:6
+        type: "enum",
+        enum: ["ADMIN", "MEMBER"],
+        default: "MEMBER",
     })
-    role : string = "MEMBER"
+    role: "ADMIN" | "MEMBER";
 
     @CreateDateColumn()
-    createdAt:Date
+    createdAt: Date
 
     @UpdateDateColumn()
-    updatedAt:Date
+    updatedAt: Date
 
     @DeleteDateColumn()
-    deletedAt:Date
+    deletedAt: Date
 
+    @BeforeInsert()
+    @BeforeUpdate()
+    async hashPassword(){
+        if(this.password){
+            this.password = await bcrypt.hash(this.password,10)
+        }
+    }
 }
