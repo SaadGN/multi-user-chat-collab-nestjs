@@ -29,7 +29,11 @@ export class UserService {
     public async createUser(userDto: CreateUserDto) {
         try {
 
-            //          check is user with same username/gmail exist
+            if(userDto.role === "ADMIN" ){
+                throw new BadRequestException('Cannot create manual ADMIN')
+            }
+
+            //          check is user with same username/email exist
             const existingUser = await this.userRepository.findOne({
                 where: [{ username: userDto.username }, { email: userDto.email }]
             })
@@ -37,9 +41,12 @@ export class UserService {
                 throw new BadRequestException(`There is already a user with same email/username`)
 
             }
-
+            
             //          create user
-            let user = this.userRepository.create(userDto)
+            let user = this.userRepository.create({
+                ...userDto,
+                role:"MEMBER"
+            })
 
             //          save user
             await this.userRepository.save(user)
@@ -47,8 +54,6 @@ export class UserService {
             return {
                 message: "User created succesfully!!!"
             }
-
-
 
         } catch (error) {
             if (error.code === 'ECONNREFUSED') {
@@ -73,5 +78,6 @@ export class UserService {
             message: `user with id ${id} deleted successfully`
         }
     }
+
 
 }
