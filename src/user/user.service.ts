@@ -72,6 +72,9 @@ export class UserService {
         if (!user) {
             throw new NotFoundException("no user found")
         }
+        if(user.role === "ADMIN"){
+            throw new BadRequestException('Cannot delte default ADMIN')
+        }
 
         await this.userRepository.delete(id)
         return {
