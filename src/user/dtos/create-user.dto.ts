@@ -1,24 +1,25 @@
-import { IsEmail, IsNotEmpty, IsString, MaxLength } from "class-validator"
+import { IsEmail, IsIn, IsNotEmpty, IsOptional, IsString, MaxLength } from "class-validator"
 
 export class CreateUserDto {
     @IsString()
     @IsNotEmpty()
-    @MaxLength(30)
+    @MaxLength(100)
     username: string
 
     @IsEmail()
     @IsNotEmpty()
-    @MaxLength(30)
+    @MaxLength(100)
     email: string
 
     @IsString()
     @IsNotEmpty()
-    @MaxLength(30)
+    @MaxLength(100)
     password: string
 
     @IsString()
     @IsNotEmpty()
-    role: string
+    @IsIn(["ADMIN", "MEMBER"], { message: "Role must be ADMIN or MEMBER" })
+    role: "ADMIN" | "MEMBER";
 
 
 }
