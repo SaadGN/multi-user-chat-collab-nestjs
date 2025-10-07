@@ -5,7 +5,6 @@ import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AdminModule } from './admin/admin.module';
-// import appConfig from './config/app.config';
 import dbConfig from './config/db.config';
 import dotenv from "dotenv";
 import { AdminService } from './admin/admin.service';
