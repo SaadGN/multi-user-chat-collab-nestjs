@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from 'src/user/dtos/create-user.dto';
+import { userRole } from 'src/user/dtos/role.enum';
 import { User } from 'src/user/user.entity';
 import { UserService } from 'src/user/user.service';
 import { Repository } from 'typeorm';
@@ -11,14 +12,12 @@ export class AdminService {
     constructor(
         @InjectRepository(User)
         private userRepository: Repository<User>,
-
-        private readonly userService: UserService,
     ) { }
 
     async createDefaultAdmin() {
 
         const existingUser = await this.userRepository.findOne({
-            where: { role: "ADMIN" }
+            where: { role: userRole.ADMIN }
         })
 
         if (existingUser) {
@@ -39,7 +38,7 @@ export class AdminService {
             username: username,
             email: email,
             password: password,
-            role: "ADMIN"
+            role: userRole.ADMIN
         }
 
         let adminUser = await this.userRepository.create(user)

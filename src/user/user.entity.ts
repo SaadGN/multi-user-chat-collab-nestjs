@@ -1,5 +1,6 @@
 import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import * as bcrypt from 'bcrypt';
+import { userRole } from "./dtos/role.enum";
 
 @Entity()
 export class User {
@@ -32,10 +33,10 @@ export class User {
 
     @Column({
         type: "enum",
-        enum: ["ADMIN", "MEMBER"],
-        default: "MEMBER",
+        enum: userRole,
+        default: userRole.MEMBER,
     })
-    role: "ADMIN" | "MEMBER";
+    role: userRole;
 
     @CreateDateColumn()
     createdAt: Date

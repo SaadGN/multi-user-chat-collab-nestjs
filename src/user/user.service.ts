@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dtos/create-user.dto';
+import { userRole } from './dtos/role.enum';
 
 @Injectable()
 export class UserService {
@@ -29,7 +30,7 @@ export class UserService {
     public async createUser(userDto: CreateUserDto) {
         try {
 
-            if(userDto.role === "ADMIN" ){
+            if(userDto.role === userRole.ADMIN ){
                 throw new BadRequestException('Cannot create manual ADMIN')
             }
 
@@ -45,7 +46,7 @@ export class UserService {
             //          create user
             let user = this.userRepository.create({
                 ...userDto,
-                role:"MEMBER"
+                role:userRole.MEMBER
             })
 
             //          save user
@@ -72,8 +73,8 @@ export class UserService {
         if (!user) {
             throw new NotFoundException("no user found")
         }
-        if(user.role === "ADMIN"){
-            throw new BadRequestException('Cannot delte default ADMIN')
+        if(user.role === userRole.MEMBER ){
+            throw new BadRequestException('Cannot delete default ADMIN')
         }
 
         await this.userRepository.delete(id)
