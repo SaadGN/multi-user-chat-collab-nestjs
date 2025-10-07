@@ -8,8 +8,6 @@ import { AdminModule } from './admin/admin.module';
 import dbConfig from './config/db.config';
 import dotenv from "dotenv";
 import { AdminService } from './admin/admin.service';
-import { AuthService } from './auth/auth.service';
-import { AuthController } from './auth/auth.controller';
 import { AuthModule } from './auth/auth.module';
 dotenv.config()
 
@@ -43,8 +41,8 @@ dotenv.config()
     AuthModule,
 
   ],
-  controllers: [AppController, AuthController],
-  providers: [AppService, AuthService],
+  controllers: [AppController],
+  providers: [AppService],
 })
 
 export class AppModule implements OnModuleInit {
