@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dtos/create-user.dto';
-
+import { userRole } from './enums/role.enum';
 @Injectable()
 export class UserService {
 
@@ -29,7 +29,11 @@ export class UserService {
     public async createUser(userDto: CreateUserDto) {
         try {
 
-            //          check is user with same username/gmail exist
+            if(userDto.role === userRole.ADMIN ){
+                throw new BadRequestException('Cannot create manual ADMIN')
+            }
+
+            //          check is user with same username/email exist
             const existingUser = await this.userRepository.findOne({
                 where: [{ username: userDto.username }, { email: userDto.email }]
             })
@@ -37,9 +41,12 @@ export class UserService {
                 throw new BadRequestException(`There is already a user with same email/username`)
 
             }
-
+            
             //          create user
-            let user = this.userRepository.create(userDto)
+            let user = this.userRepository.create({
+                ...userDto,
+                role:userRole.MEMBER
+            })
 
             //          save user
             await this.userRepository.save(user)
@@ -47,8 +54,6 @@ export class UserService {
             return {
                 message: "User created succesfully!!!"
             }
-
-
 
         } catch (error) {
             if (error.code === 'ECONNREFUSED') {
@@ -67,11 +72,15 @@ export class UserService {
         if (!user) {
             throw new NotFoundException("no user found")
         }
+        if(user.role === userRole.ADMIN ){
+            throw new BadRequestException('Cannot delete default ADMIN')
+        }
 
         await this.userRepository.delete(id)
         return {
             message: `user with id ${id} deleted successfully`
         }
     }
+
 
 }
