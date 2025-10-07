@@ -1,6 +1,7 @@
 import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import * as bcrypt from 'bcrypt';
-import { userRole } from "./dtos/role.enum";
+import { userRole } from "./enums/role.enum";
+
 
 @Entity()
 export class User {
