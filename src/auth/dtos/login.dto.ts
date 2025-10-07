@@ -9,4 +9,5 @@ export class LoginDto {
     @IsNotEmpty()
     @MaxLength(100)
     password: string
+    
 }
