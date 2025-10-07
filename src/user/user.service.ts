@@ -73,7 +73,7 @@ export class UserService {
         if (!user) {
             throw new NotFoundException("no user found")
         }
-        if(user.role === userRole.MEMBER ){
+        if(user.role === userRole.ADMIN ){
             throw new BadRequestException('Cannot delete default ADMIN')
         }
 
