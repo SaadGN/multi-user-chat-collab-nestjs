@@ -26,10 +26,16 @@ export class UserService {
         }
     }
 
+    public async findUserByMail(email: string) {
+        return await this.userRepository.findOne({
+            where: { email }
+        })
+    }
+
     public async createUser(userDto: CreateUserDto) {
         try {
 
-            if(userDto.role === userRole.ADMIN ){
+            if (userDto.role === userRole.ADMIN) {
                 throw new BadRequestException('Cannot create manual ADMIN')
             }
 
@@ -41,11 +47,11 @@ export class UserService {
                 throw new BadRequestException(`There is already a user with same email/username`)
 
             }
-            
+
             //          create user
             let user = this.userRepository.create({
                 ...userDto,
-                role:userRole.MEMBER
+                role: userRole.MEMBER
             })
 
             //          save user
@@ -72,7 +78,7 @@ export class UserService {
         if (!user) {
             throw new NotFoundException("no user found")
         }
-        if(user.role === userRole.ADMIN ){
+        if (user.role === userRole.ADMIN) {
             throw new BadRequestException('Cannot delete default ADMIN')
         }
 
