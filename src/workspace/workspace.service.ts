@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, InternalServerErrorException, RequestTimeoutException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException, RequestTimeoutException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Workspace } from './entity/workspace.entity';
 import { Repository } from 'typeorm';
@@ -39,13 +39,39 @@ export class WorkspaceService {
                     description: 'Could not connect to database!'
                 })
             }
-           throw error
+            throw error
         }
     }
 
     public async getAllWorkspaces() {
         try {
             return this.workspaceRepository.find()
+        } catch (error) {
+            if (error.code === 'ECONNREFUSED') {
+                throw new RequestTimeoutException("Error has occured.Try again later", {
+                    description: 'Could not connect to database!'
+                })
+            }
+            throw error
+        }
+    }
+
+    public async deleteWorkspace(id: number) {
+        try {
+            //check if workspace exists
+            const workspace = await this.workspaceRepository.findOne({
+                where: { id }
+            })
+            if (!workspace) {
+                throw new NotFoundException(`Workspace with id ${id} does not exist`)
+            }
+
+            // delete workspace from db
+            await this.workspaceRepository.delete(id)
+            return {
+                success: true,
+                message: `workspace with id ${id} deleted successfully`
+            }
         } catch (error) {
             if (error.code === 'ECONNREFUSED') {
                 throw new RequestTimeoutException("Error has occured.Try again later", {

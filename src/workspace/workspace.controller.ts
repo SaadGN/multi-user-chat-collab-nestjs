@@ -1,6 +1,7 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post } from '@nestjs/common';
 import { WorkspaceService } from './workspace.service';
 import { CreateWorkspaceDto } from './dtos/workspace.dto';
+import { retry } from 'rxjs';
 
 @Controller('workspace')
 export class WorkspaceController {
@@ -9,13 +10,17 @@ export class WorkspaceController {
     ){}
 
     @Get()
-    public getAllWorkspaces(){
+    getAllWorkspaces(){
         return this.workspaceService.getAllWorkspaces()
     }
-    
+
     @Post()
-    public createWorkspace(@Body() workspaceDto:CreateWorkspaceDto){
+    createWorkspace(@Body() workspaceDto:CreateWorkspaceDto){
         return this.workspaceService.createWorkspace(workspaceDto)
     }
     
+    @Delete(':id')
+    deleteWorkspace(@Param('id',ParseIntPipe) id:number){
+        return this.workspaceService.deleteWorkspace(id)
+    }
 }
