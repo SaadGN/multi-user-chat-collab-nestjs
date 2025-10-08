@@ -14,6 +14,11 @@ export class WorkspaceController {
         return this.workspaceService.getAllWorkspaces()
     }
 
+    @Get(':id')
+    findWorkspaceById(@Param('id',ParseIntPipe) id:number){
+        return this.workspaceService.findWorkspaceById(id)
+    }
+
     @Post()
     createWorkspace(@Body() workspaceDto:CreateWorkspaceDto){
         return this.workspaceService.createWorkspace(workspaceDto)
@@ -23,4 +28,5 @@ export class WorkspaceController {
     deleteWorkspace(@Param('id',ParseIntPipe) id:number){
         return this.workspaceService.deleteWorkspace(id)
     }
+
 }

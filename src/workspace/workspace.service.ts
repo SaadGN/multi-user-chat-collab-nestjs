@@ -63,15 +63,35 @@ export class WorkspaceService {
                 where: { id }
             })
             if (!workspace) {
-                throw new NotFoundException(`Workspace with id ${id} does not exist`)
+                throw new NotFoundException(`Workspace with id ${id} not found`)
             }
 
             // delete workspace from db
             await this.workspaceRepository.delete(id)
             return {
                 success: true,
-                message: `workspace with id ${id} deleted successfully`
+                message: `Workspace with id ${id} deleted successfully`
             }
+        } catch (error) {
+            if (error.code === 'ECONNREFUSED') {
+                throw new RequestTimeoutException("Error has occured.Try again later", {
+                    description: 'Could not connect to database!'
+                })
+            }
+            throw error
+        }
+    }
+
+    public async findWorkspaceById(id: number) {
+        try {
+            const workspace = await this.workspaceRepository.findOne({
+                where: { id }
+            })
+            if (!workspace) {
+                throw new NotFoundException(`Workspace with id ${id} not found!`)
+            }
+            return workspace
+
         } catch (error) {
             if (error.code === 'ECONNREFUSED') {
                 throw new RequestTimeoutException("Error has occured.Try again later", {
