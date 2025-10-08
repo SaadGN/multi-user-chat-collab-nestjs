@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, RequestTimeoutException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Workspace } from './entity/workspace.entity';
 import { Repository } from 'typeorm';
@@ -23,16 +23,35 @@ export class WorkspaceService {
             }
 
             // create a workspace
-            let workspaceEntity = this.workspaceRepository.create(workspaceDto)
+            const workspaceEntity = this.workspaceRepository.create(workspaceDto)
 
             //save workspace
             await this.workspaceRepository.save(workspaceEntity)
 
             return {
                 success: true,
-                message: `Workspace ${workspaceDto.name} Created successfully`
+                message: `Workspace Created successfully`,
+                data: workspaceEntity
             }
         } catch (error) {
+            if (error.code === 'ECONNREFUSED') {
+                throw new RequestTimeoutException("Error has occured.Try again later", {
+                    description: 'Could not connect to database!'
+                })
+            }
+           throw error
+        }
+    }
+
+    public async getAllWorkspaces() {
+        try {
+            return this.workspaceRepository.find()
+        } catch (error) {
+            if (error.code === 'ECONNREFUSED') {
+                throw new RequestTimeoutException("Error has occured.Try again later", {
+                    description: 'Could not connect to database!'
+                })
+            }
             throw error
         }
     }
