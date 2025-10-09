@@ -1,6 +1,7 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post } from '@nestjs/common';
 import { WorkspaceService } from './workspace.service';
 import { CreateWorkspaceDto } from './dtos/workspace.dto';
+import { UpdateWokspaceDto } from './dtos/update-workspace.dto';
 
 @Controller('workspace')
 export class WorkspaceController {
@@ -26,6 +27,14 @@ export class WorkspaceController {
     @Delete(':id')
     deleteWorkspace(@Param('id', ParseIntPipe) id: number) {
         return this.workspaceService.deleteWorkspace(id)
+    }
+
+    @Patch(':id')
+    updateWorkspace(
+        @Param('id',ParseIntPipe) id:number,
+        @Body() updateWorkspaceDto:UpdateWokspaceDto
+    ){
+        return this.workspaceService.updateWorkspace(id,updateWorkspaceDto)
     }
 
 }

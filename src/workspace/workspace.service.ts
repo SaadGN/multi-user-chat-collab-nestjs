@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Workspace } from './entity/workspace.entity';
 import { Repository } from 'typeorm';
 import { CreateWorkspaceDto } from './dtos/workspace.dto';
+import { UpdateWokspaceDto } from './dtos/update-workspace.dto';
 
 @Injectable()
 export class WorkspaceService {
@@ -102,4 +103,41 @@ export class WorkspaceService {
         }
     }
 
+    public async updateWorkspace(id: number, updateWorkspaceDto: UpdateWokspaceDto) {
+
+        try {
+            // check if name exists it && does not match other workspace name
+            if (updateWorkspaceDto.name) {
+                const existingWorkspace = await this.workspaceRepository.findOne({
+                    where: { name: updateWorkspaceDto.name }
+                })
+                if (existingWorkspace && existingWorkspace.id !== id) {
+                    throw new BadRequestException(`Workspace with name ${updateWorkspaceDto.name} already exists!`)
+                }
+            }
+            
+            const updatedWorkspace = await this.workspaceRepository.preload({
+                id,
+                ...updateWorkspaceDto
+            })
+            if (!updatedWorkspace) {
+                throw new NotFoundException(`Workspace with id ${id} not found!`)
+            }
+
+            await this.workspaceRepository.save(updatedWorkspace)
+
+            return {
+                success: true,
+                message: "Workspace updated successfully!",
+                data: updatedWorkspace
+            }
+        } catch (error) {
+            if (error.code === 'ECONNREFUSED') {
+                throw new RequestTimeoutException("Error has occured.Try again later", {
+                    description: 'Could not connect to database!'
+                })
+            }
+            throw error
+        }
+    }
 }
