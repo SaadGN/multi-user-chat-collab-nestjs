@@ -9,6 +9,7 @@ import dbConfig from './config/db.config';
 import dotenv from "dotenv";
 import { AdminService } from './admin/admin.service';
 import { AuthModule } from './auth/auth.module';
+import { WorkspaceModule } from './workspace/workspace.module';
 dotenv.config()
 
 @Module({
@@ -39,6 +40,8 @@ dotenv.config()
     AdminModule,
 
     AuthModule,
+
+    WorkspaceModule,
 
   ],
   controllers: [AppController],
