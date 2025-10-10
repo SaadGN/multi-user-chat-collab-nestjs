@@ -1,8 +1,12 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UseGuards } from '@nestjs/common';
 import { WorkspaceService } from './workspace.service';
 import { CreateWorkspaceDto } from './dtos/workspace.dto';
 import { UpdateWokspaceDto } from './dtos/update-workspace.dto';
+import { AuthorizeGuard } from 'src/guards/authorize.guard';
+import { AdminDecorator } from 'src/auth/decorators/admin.decorator';
 
+@UseGuards(AuthorizeGuard)
+@AdminDecorator()
 @Controller('workspace')
 export class WorkspaceController {
     constructor(

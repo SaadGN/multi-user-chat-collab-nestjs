@@ -1,9 +1,13 @@
-import { Body, ClassSerializerInterceptor, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UseInterceptors } from '@nestjs/common';
+import { Body, ClassSerializerInterceptor, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UseGuards, UseInterceptors } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
+import { AdminDecorator } from 'src/auth/decorators/admin.decorator';
+import { AuthorizeGuard } from 'src/guards/authorize.guard';
 
 @UseInterceptors(ClassSerializerInterceptor)
+@UseGuards(AuthorizeGuard)
+@AdminDecorator()
 @Controller('user')
 export class UserController {
 
