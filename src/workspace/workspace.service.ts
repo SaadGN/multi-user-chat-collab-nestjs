@@ -106,6 +106,9 @@ export class WorkspaceService {
     public async updateWorkspace(id: number, updateWorkspaceDto: UpdateWokspaceDto) {
 
         try {
+            if(!updateWorkspaceDto.name && !updateWorkspaceDto.description){
+                throw new BadRequestException("No Data Entered")
+            }
             // check if name exists it && does not match other workspace name
             if (updateWorkspaceDto.name) {
                 const existingWorkspace = await this.workspaceRepository.findOne({
