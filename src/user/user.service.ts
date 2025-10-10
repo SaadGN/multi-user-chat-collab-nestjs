@@ -91,6 +91,9 @@ export class UserService {
 
     public async updateUser(id: number, updateUserDto: UpdateUserDto) {
         try {
+            if(!updateUserDto.password && !updateUserDto.username){
+                throw new BadRequestException(`No data entered!`)
+            }
             const user = await this.userRepository.findOne({
                 where: { id }
             })
@@ -107,24 +110,6 @@ export class UserService {
                     throw new BadRequestException(`User with username ${updateUserDto.username} already exists!`)
                 }
             }
-            //check if updated email matches other username
-            if (updateUserDto.email) {
-
-                const existingEmail = await this.userRepository.findOne({
-                    where: { email: updateUserDto.email }
-                })
-                if (existingEmail && existingEmail.id !== id) {
-                    throw new BadRequestException(`User with email ${updateUserDto.email} already exists!`)
-                }
-            }
-
-            // const updatedUser = await this.userRepository.preload({
-            //     id,
-            //     ...updateUserDto
-            // })
-            // if (!updatedUser) {
-            //     throw new BadRequestException(`User with id ${id} not found`)
-            // }
 
             Object.assign(user,updateUserDto)
 
