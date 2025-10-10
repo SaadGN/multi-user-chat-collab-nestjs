@@ -1,6 +1,7 @@
 import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import * as bcrypt from 'bcrypt';
 import { userRole } from "./enums/role.enum";
+import { Exclude } from "class-transformer";
 
 
 @Entity()
@@ -25,6 +26,7 @@ export class User {
     })
     email: string
 
+    @Exclude()
     @Column({
         type: "varchar",
         nullable: false,
