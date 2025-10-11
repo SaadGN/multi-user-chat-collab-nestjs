@@ -4,6 +4,7 @@ import { User } from './user.entity';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { userRole } from './enums/role.enum';
+import { UpdateUserDto } from './dtos/update-user.dto';
 @Injectable()
 export class UserService {
 
@@ -39,12 +40,12 @@ export class UserService {
                 throw new BadRequestException('Cannot create manual ADMIN')
             }
 
-            //          check is user with same username/email exist
+            //          check is user with same existingUsername/email exist
             const existingUser = await this.userRepository.findOne({
                 where: [{ username: userDto.username }, { email: userDto.email }]
             })
             if (existingUser) {
-                throw new BadRequestException(`There is already a user with same email/username`)
+                throw new BadRequestException(`There is already a user with same email/existingUsername`)
 
             }
 
@@ -88,5 +89,50 @@ export class UserService {
         }
     }
 
+    public async updateUser(id: number, updateUserDto: UpdateUserDto) {
+        try {
+            if(!updateUserDto.password && !updateUserDto.username){
+                throw new BadRequestException(`No data entered!`)
+            }
+            const user = await this.userRepository.findOne({
+                where: { id }
+            })
+            if (!user) {
+                    throw new BadRequestException(`User with id ${id} not found!`)
+                }
+
+            //check if updated username matches other username
+            if (updateUserDto.username) {
+                const existingUsername = await this.userRepository.findOne({
+                    where: { username: updateUserDto.username }
+                })
+                if (existingUsername && existingUsername.id !== id) {
+                    throw new BadRequestException(`User with username ${updateUserDto.username} already exists!`)
+                }
+            }
+
+            Object.assign(user,updateUserDto)
+
+            await this.userRepository.save(user)
+            return {
+                success: true,
+                message: "User updated successfully",
+                data: user
+            }
+
+        } catch (error) {
+            if (error.code === 'ECONNREFUSED') {
+                throw new RequestTimeoutException("Error has occured.Try again later", {
+                    description: 'Could not connect to database!'
+                })
+            }
+            throw error
+        }
+    }
+
+
 
 }
+
+
+

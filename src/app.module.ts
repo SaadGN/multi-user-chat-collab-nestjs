@@ -10,6 +10,7 @@ import dotenv from "dotenv";
 import { AdminService } from './admin/admin.service';
 import { AuthModule } from './auth/auth.module';
 import { WorkspaceModule } from './workspace/workspace.module';
+import authConfig from './config/auth.config';
 dotenv.config()
 
 @Module({
@@ -19,7 +20,7 @@ dotenv.config()
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
-      load: [dbConfig],
+      load: [dbConfig,authConfig],
     }),
 
     TypeOrmModule.forRootAsync({
