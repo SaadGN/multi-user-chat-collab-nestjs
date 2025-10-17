@@ -20,7 +20,7 @@ export class MailService {
     }
 
     async sendInvite(email, token) {
-        const inviteLink = `http://localhost:3000/auth/signup?token=${token}`
+        const inviteLink = `${process.env.INVITE_LINK}/auth/signup?token=${token}`
 
         const mail = {
             from: `WORKSPACE ADMIN <${process.env.MAIL_USER}>`,
