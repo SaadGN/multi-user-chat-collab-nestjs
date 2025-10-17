@@ -19,11 +19,6 @@ export class Invite {
     })
     token:string
 
-    @Column({
-        type:"boolean",
-        default:false
-    })
-    isUsed:boolean
 
     @CreateDateColumn()
     createdAt:Date
