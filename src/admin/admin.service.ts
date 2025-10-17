@@ -74,9 +74,9 @@ export class AdminService {
             }
 
             const existingInvite = await this.inviteRepository.findOne({
-                where: { email, isUsed: true }
+                where: { email }
             })
-            if (existingInvite) {
+            if (existingInvite && existingInvite.expiresAt > new Date()) {
                 throw new BadRequestException(`Invite has already been sent to email ${email}`)
             }
             const token = randomBytes(32).toString('hex')
@@ -87,9 +87,8 @@ export class AdminService {
                 token,
                 expiresAt
             })
-            invite.isUsed = true
             await this.inviteRepository.save(invite)
-            
+
             await this.mailService.sendInvite(email, token)
 
             return {
