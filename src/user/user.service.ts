@@ -45,7 +45,7 @@ export class UserService {
                 where: [{ username: userDto.username }, { email: userDto.email }]
             })
             if (existingUser) {
-                throw new BadRequestException(`There is already a user with same email/existingUsername`)
+                throw new BadRequestException(`There is already a user with same email / username`)
 
             }
 
