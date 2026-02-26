@@ -63,6 +63,9 @@ export class AuthService {
 
     async signup(token: string, userDto: CreateUserDto) {
         try {
+            if(!token){
+                throw new BadRequestException('Invite token is required')
+            }
             const tokenExist = await this.inviteRepository.findOne({
                 where: { token }
             })
