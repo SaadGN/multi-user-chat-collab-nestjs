@@ -1,4 +1,4 @@
-import { BadRequestException, CanActivate, ExecutionContext, Inject, Injectable, UnauthorizedException } from "@nestjs/common";
+import { BadRequestException, CanActivate, ExecutionContext, ForbiddenException, Inject, Injectable, UnauthorizedException } from "@nestjs/common";
 import type { ConfigType } from "@nestjs/config";
 import { Reflector } from "@nestjs/core";
 import { Request } from 'express';
@@ -40,13 +40,15 @@ export class AuthorizeGuard implements CanActivate {
         //extract token from request
         const authHeader = request.headers.authorization
         const token = authHeader?.split(' ')[1]
+
         if (!token) {
             throw new UnauthorizedException('No token provided')
         }
 
+        let payload:any;
         try {
             //verify token
-                const payload = await this.jwtService.verifyAsync(token, {
+                payload = await this.jwtService.verifyAsync(token, {
                     secret: this.authConfiguration.secret,
                     issuer: this.authConfiguration.issuer,
                     audience: this.authConfiguration.audience,
@@ -54,13 +56,23 @@ export class AuthorizeGuard implements CanActivate {
             )
             request[REQ_USER] = payload
 
-            if (roleCheck &&  !roleCheck.includes(payload.role)) {
-                throw new UnauthorizedException(`Only Admin have access to this route`)
-            }
-
         } catch (error) {
-            throw  error
+            if(error.name == 'TokenExpiredError'){
+                throw new UnauthorizedException('Token Expired.Please login again!')
+            }
+            if(error.name == 'JsonWebTokenError'){
+                throw new UnauthorizedException('Invalid token!')
+            }
+            throw new UnauthorizedException("Authentication failed")
         }
+
+        if(!payload || !payload.role){
+            throw new UnauthorizedException('Invalid token payload')
+        }
+        if (roleCheck &&  !roleCheck.includes(payload.role)) {
+            throw new ForbiddenException(`Admin access only!`)
+        }
+
         return true
     }
 }
