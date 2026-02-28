@@ -1,29 +1,38 @@
-import { User } from "src/user/user.entity";
-import { Workspace } from "src/workspace/entity/workspace.entity";
-import { Column, CreateDateColumn, Entity, JoinColumn, PrimaryGeneratedColumn } from "typeorm";
-import { ManyToOne } from "typeorm/browser";
-
-
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class WorkspaceInvite{
     @PrimaryGeneratedColumn()
     id :number;
     
-    @ManyToOne(()=> Workspace)
-    @JoinColumn({ name :'workspace_id'})
-    workpsace:Workspace;
-    
-    @ManyToOne(()=> User)
-    @JoinColumn({ name :'user_id'})
-    user:User;
+   @Column({
+    type:'varchar',
+    nullable:false,
+    length:100
+   })
+   email:string;
 
+   @Column({
+    type:'varchar',
+    nullable:false,
+    length:100
+   })
+   token:string;
 
-    @Column({default:'pending'})
-    status:string;
+   @Column({
+    type:"int",
+    nullable:false
+   })
+   workspaceId:number;
 
-    @CreateDateColumn()
-    createdAt: Date;
+   @Column({
+    type:"boolean",
+    default:false
+   })
+   isAccepted:boolean;
+
+   @CreateDateColumn()
+   createdAt:Date;
 
     @Column({
         type:"timestamp",
