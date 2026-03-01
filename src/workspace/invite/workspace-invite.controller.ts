@@ -20,8 +20,8 @@ export class WorkspaceInviteController{
         return await this.workspaceInviteService.sendWorkspaceInvite(inviteDto);
     }
 
-    @SetMetadata('roles', ['MEMBER'])
     @UseGuards(AuthorizeGuard)
+    @MemberDecorator()
     @Get()
     async acceptInvite(@Query('token') token:string,@Req() req:Request){
         const result = await this.workspaceInviteService.acceptWorkspaceInvite(token,req[REQ_USER]);
