@@ -69,7 +69,7 @@ export class WorkspaceInviteService {
         }
     }
 
-    async acceptWorkspaceInvite(token: string) {
+    async acceptWorkspaceInvite(token: string,authUser:any) {
         try {
             const invite = await this.workspaceInviteRepository.findOne({
                 where: { token }
@@ -82,6 +82,10 @@ export class WorkspaceInviteService {
             }
             if (invite.expiresAt < new Date()) {
                 throw new BadRequestException(`Invite expired!`)
+            }
+
+            if(invite.email !== authUser.email){
+                throw new BadRequestException(`Invite does not belong to user with email ${invite.email}`)
             }
 
             const user = await this.userService.findUserByMail(invite.email)
