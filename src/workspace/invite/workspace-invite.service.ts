@@ -62,7 +62,7 @@ export class WorkspaceInviteService {
 
             return {
                 success: true,
-                message: `Worspace invitation mail sent successfully!`
+                message: `Workspace invitation mail sent successfully!`
             }
         } catch (error) {
             throw error

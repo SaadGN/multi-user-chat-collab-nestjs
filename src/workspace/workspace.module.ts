@@ -12,7 +12,7 @@ import authConfig from 'src/config/auth.config';
   imports: [
     TypeOrmModule.forFeature([Workspace]),
     JwtModule.registerAsync(authConfig.asProvider())
-
-  ]
+  ],
+  exports:[WorkspaceService]
 })
 export class WorkspaceModule { }

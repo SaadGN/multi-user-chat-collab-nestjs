@@ -1,6 +1,6 @@
 import { User } from "src/user/user.entity";
 import { Column, CreateDateColumn, Entity, JoinColumn, PrimaryGeneratedColumn } from "typeorm";
-import { ManyToOne } from "typeorm/browser";
+import { ManyToOne } from "typeorm";
 import { Workspace } from "./workspace.entity";
 
 
@@ -19,7 +19,7 @@ export class WorkspaceMember{
     @JoinColumn({ name :'workspace_id'})
     workpsace:Workspace;
 
-    @Column({default:'member'})
+    @Column({default:'MEMBER'})
     role:string;
 
     @CreateDateColumn()
