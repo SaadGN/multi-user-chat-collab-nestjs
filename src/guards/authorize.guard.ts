@@ -66,8 +66,6 @@ export class AuthorizeGuard implements CanActivate {
             throw new UnauthorizedException("Authentication failed")
         }
 
-        console.log('roleCheck:', roleCheck, 'payload.role:', payload.role, 'handler:', context.getHandler().name);
-
         if (!payload || !payload.role) {
             throw new UnauthorizedException('Invalid token payload')
         }
