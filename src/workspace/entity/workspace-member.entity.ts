@@ -17,7 +17,7 @@ export class WorkspaceMember{
 
     @ManyToOne(()=> Workspace)
     @JoinColumn({ name :'workspace_id'})
-    workpsace:Workspace;
+    workspace:Workspace;
 
     @Column({default:'MEMBER'})
     role:string;

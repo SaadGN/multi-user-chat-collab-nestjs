@@ -91,12 +91,13 @@ export class WorkspaceInviteService {
 
             const member = this.workspaceMemberRepository.create({
                 user,
-                workpsace: { id: invite.workspaceId },
+                workspace: { id: invite.workspaceId },
                 role: 'MEMBER'
             })
+            await this.workspaceMemberRepository.save(member)
 
-            await this.workspaceInviteRepository.save(invite)
             invite.isAccepted = true;
+            await this.workspaceInviteRepository.save(invite)
 
             return {
                 success: true,
