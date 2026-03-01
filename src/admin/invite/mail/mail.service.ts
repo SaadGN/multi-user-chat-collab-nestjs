@@ -25,7 +25,7 @@ export class MailService {
         const mail = {
             from: `WORKSPACE ADMIN <${process.env.MAIL_USER}>`,
             to: email,
-            subject: 'You have been invited to join workspace',
+            subject: 'You\'ve been invited to join the workspace as member',
             html: `
             <a href=${inviteLink}>${inviteLink}</a>
                 `
