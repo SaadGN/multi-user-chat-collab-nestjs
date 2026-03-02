@@ -19,7 +19,7 @@ export class MailService {
 
     }
 
-    async sendInvite(email, token) {
+    async sendInvite(email:string, token:string) {
         const inviteLink = `${process.env.INVITE_LINK}/auth/signup?token=${token}`
 
         const mail = {
