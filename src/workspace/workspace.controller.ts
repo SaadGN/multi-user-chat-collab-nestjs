@@ -1,9 +1,11 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { WorkspaceService } from './workspace.service';
 import { CreateWorkspaceDto } from './dtos/workspace.dto';
 import { UpdateWokspaceDto } from './dtos/update-workspace.dto';
 import { AuthorizeGuard } from 'src/guards/authorize.guard';
 import { AdminDecorator } from 'src/auth/decorators/admin.decorator';
+import { MemberDecorator } from 'src/auth/decorators/member.decorator';
+import { REQ_USER } from 'src/constants/user.constant';
 
 
 @Controller('workspace')
@@ -11,6 +13,14 @@ export class WorkspaceController {
     constructor(
         private readonly workspaceService: WorkspaceService
     ) { }
+
+    @UseGuards(AuthorizeGuard)
+    @MemberDecorator()
+    @Get("invite")
+    async acceptInvite(@Query('token') token: string, @Req() req: Request) {
+        const result = await this.workspaceService.acceptWorkspaceInvite(token, req[REQ_USER]);
+        return result;
+    }
 
     @UseGuards(AuthorizeGuard)
     @AdminDecorator()

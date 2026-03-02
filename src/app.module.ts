@@ -11,8 +11,6 @@ import { AdminService } from './admin/admin.service';
 import { AuthModule } from './auth/auth.module';
 import { WorkspaceModule } from './workspace/workspace.module';
 import authConfig from './config/auth.config';
-import { WorkspaceInviteModule } from './workspace/invite/workspace-invite.module';
-import { MailService } from './mail/mail.service';
 import { MailModule } from './mail/mail.module';
 dotenv.config()
 
@@ -45,8 +43,6 @@ dotenv.config()
     AuthModule,
 
     WorkspaceModule,
-
-    WorkspaceInviteModule,
 
     MailModule
 
