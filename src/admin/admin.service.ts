@@ -9,7 +9,7 @@ import { Invite } from './invite/entity/invite.entity';
 import { CreateInviteDto } from './invite/dto/invite.dto';
 import { UserService } from 'src/user/user.service';
 import { randomBytes } from 'crypto';
-import { MailService } from './invite/mail/mail.service';
+import { MailService } from 'src/mail/mail.service';
 
 @Injectable()
 export class AdminService {

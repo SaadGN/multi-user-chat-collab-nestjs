@@ -4,7 +4,7 @@ import { WorkspaceInvite } from "./entity/workspace-invite.entity";
 import { Repository } from "typeorm";
 import { UserService } from "src/user/user.service";
 import { WorkspaceService } from "../workspace.service";
-import { MailService } from "src/admin/invite/mail/mail.service";
+import { MailService } from 'src/mail/mail.service';
 import { randomBytes } from "crypto";
 import { CreateWorkspaceInviteDto } from "./dto/create-workspace-invite.dto";
 import { WorkspaceMember } from "../entity/workspace-member.entity";

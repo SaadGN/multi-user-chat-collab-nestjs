@@ -6,9 +6,9 @@ import { UserModule } from "src/user/user.module";
 import { WorkspaceModule } from "../workspace.module";
 import { WorkspaceInviteController } from "./workspace-invite.controller";
 import { WorkspaceInviteService } from "./workspace-invite.service";
-import { MailModule } from "src/admin/invite/mail/mail.module";
 import { JwtModule } from "@nestjs/jwt";
 import authConfig from "src/config/auth.config";
+import { MailModule } from "src/mail/mail.module";
 
 
 @Module({

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query, Req, SetMetadata, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Post, Query, Req, UseGuards } from "@nestjs/common";
 import { WorkspaceInviteService } from "./workspace-invite.service";
 import { CreateWorkspaceInviteDto } from "./dto/create-workspace-invite.dto";
 import { AuthorizeGuard } from "src/guards/authorize.guard";
