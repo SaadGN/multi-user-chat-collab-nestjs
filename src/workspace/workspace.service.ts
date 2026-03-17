@@ -6,7 +6,7 @@ import { CreateWorkspaceDto } from './dtos/workspace.dto';
 import { UpdateWokspaceDto } from './dtos/update-workspace.dto';
 import { WorkspaceMember } from './entity/workspace-member.entity';
 import { UserService } from 'src/user/user.service';
-import { WorkspaceInvite } from 'src/admin/invite/entity/workspace-invite.entity';
+import { WorkspaceInvite } from './entity/workspace-invite.entity';
 
 @Injectable()
 export class WorkspaceService {

@@ -3,7 +3,7 @@ import { CreateInviteDto } from './invite/dto/invite.dto';
 import { AdminService } from './admin.service';
 import { AuthorizeGuard } from 'src/guards/authorize.guard';
 import { AdminDecorator } from 'src/auth/decorators/admin.decorator';
-import { CreateWorkspaceInviteDto } from './invite/dto/ceate-workspace-invite.dto';
+import { CreateWorkspaceInviteDto } from 'src/workspace/dtos/create-workspace-invite.dto';
 
 @Controller('admin')
 export class AdminController {

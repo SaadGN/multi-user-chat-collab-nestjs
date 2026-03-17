@@ -9,7 +9,7 @@ import { JwtModule } from '@nestjs/jwt';
 import authConfig from 'src/config/auth.config';
 import { MailModule } from 'src/mail/mail.module';
 import { WorkspaceModule } from 'src/workspace/workspace.module';
-import { WorkspaceInvite } from './invite/entity/workspace-invite.entity';
+import { WorkspaceInvite } from 'src/workspace/entity/workspace-invite.entity';
 
 @Module({
   controllers: [AdminController],

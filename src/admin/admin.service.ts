@@ -10,8 +10,8 @@ import { UserService } from 'src/user/user.service';
 import { randomBytes } from 'crypto';
 import { MailService } from 'src/mail/mail.service';
 import { WorkspaceService } from 'src/workspace/workspace.service';
-import { WorkspaceInvite } from './invite/entity/workspace-invite.entity';
-import { CreateWorkspaceInviteDto } from './invite/dto/ceate-workspace-invite.dto';
+import { WorkspaceInvite } from 'src/workspace/entity/workspace-invite.entity';
+import { CreateWorkspaceInviteDto } from 'src/workspace/dtos/create-workspace-invite.dto';
 
 @Injectable()
 export class AdminService {

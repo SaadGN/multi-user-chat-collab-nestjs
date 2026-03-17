@@ -7,7 +7,7 @@ import { JwtModule } from '@nestjs/jwt';
 import authConfig from 'src/config/auth.config';
 import { WorkspaceMember } from './entity/workspace-member.entity';
 import { UserModule } from 'src/user/user.module';
-import { WorkspaceInvite } from 'src/admin/invite/entity/workspace-invite.entity';
+import { WorkspaceInvite } from './entity/workspace-invite.entity';
 
 @Module({
   controllers: [WorkspaceController],
