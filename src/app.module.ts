@@ -11,12 +11,12 @@ import { AdminService } from './admin/admin.service';
 import { AuthModule } from './auth/auth.module';
 import { WorkspaceModule } from './workspace/workspace.module';
 import authConfig from './config/auth.config';
+import { MailModule } from './mail/mail.module';
 dotenv.config()
 
 @Module({
   imports: [
     UserModule,
-
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
@@ -43,6 +43,8 @@ dotenv.config()
     AuthModule,
 
     WorkspaceModule,
+
+    MailModule
 
   ],
   controllers: [AppController],

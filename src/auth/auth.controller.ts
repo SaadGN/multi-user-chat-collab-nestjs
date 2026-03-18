@@ -10,7 +10,7 @@ export class AuthController {
         private readonly authService: AuthService
     ) { }
 
-    @Post('login')
+    @Post('login')  
     async loginUser(@Body() loginDto: LoginDto) {
         return await this.authService.loginUser(loginDto)
     }

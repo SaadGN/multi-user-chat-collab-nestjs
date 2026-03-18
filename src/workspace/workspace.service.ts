@@ -4,12 +4,24 @@ import { Workspace } from './entity/workspace.entity';
 import { Repository } from 'typeorm';
 import { CreateWorkspaceDto } from './dtos/workspace.dto';
 import { UpdateWokspaceDto } from './dtos/update-workspace.dto';
+import { WorkspaceMember } from './entity/workspace-member.entity';
+import { UserService } from 'src/user/user.service';
+import { WorkspaceInvite } from './entity/workspace-invite.entity';
 
 @Injectable()
 export class WorkspaceService {
     constructor(
         @InjectRepository(Workspace)
-        private readonly workspaceRepository: Repository<Workspace>
+        private readonly workspaceRepository: Repository<Workspace>,
+
+        @InjectRepository(WorkspaceInvite)
+        private workspaceInviteRepository: Repository<WorkspaceInvite>,
+
+        @InjectRepository(WorkspaceMember)
+        private workspaceMemberRepository: Repository<WorkspaceMember>,
+
+        private userService:UserService
+
     ) { }
 
     public async createWorkspace(workspaceDto: CreateWorkspaceDto) {
@@ -106,7 +118,7 @@ export class WorkspaceService {
     public async updateWorkspace(id: number, updateWorkspaceDto: UpdateWokspaceDto) {
 
         try {
-            if(!updateWorkspaceDto.name && !updateWorkspaceDto.description){
+            if (!updateWorkspaceDto.name && !updateWorkspaceDto.description) {
                 throw new BadRequestException("No Data Entered")
             }
             // check if name exists it && does not match other workspace name
@@ -118,7 +130,7 @@ export class WorkspaceService {
                     throw new BadRequestException(`Workspace with name ${updateWorkspaceDto.name} already exists!`)
                 }
             }
-            
+
             const updatedWorkspace = await this.workspaceRepository.preload({
                 id,
                 ...updateWorkspaceDto
@@ -140,6 +152,49 @@ export class WorkspaceService {
                     description: 'Could not connect to database!'
                 })
             }
+            throw error
+        }
+    }
+
+    async acceptWorkspaceInvite(token: string,authUser:any) {
+        try {
+            const invite = await this.workspaceInviteRepository.findOne({
+                where: { token }
+            })
+            if (!invite) {
+                throw new BadRequestException(`Invalid invite token`)
+            }
+            if (invite.isAccepted) {
+                throw new BadRequestException(`Invite already used`)
+            }
+            if (invite.expiresAt < new Date()) {
+                throw new BadRequestException(`Invite expired!`)
+            }
+
+            if(invite.email !== authUser.email){
+                throw new BadRequestException(`Invite does not belong to user with email ${invite.email}`)
+            }
+
+            const user = await this.userService.findUserByMail(invite.email)
+            if (!user) {
+                throw new BadRequestException(`User not found!`)
+            }
+
+            const member = this.workspaceMemberRepository.create({
+                user,
+                workspace: { id: invite.workspaceId },
+                role: 'MEMBER'
+            })
+            await this.workspaceMemberRepository.save(member)
+
+            invite.isAccepted = true;
+            await this.workspaceInviteRepository.save(invite)
+
+            return {
+                success: true,
+                message: "Joined Workspace Successfully!"
+            }
+        } catch (error) {
             throw error
         }
     }

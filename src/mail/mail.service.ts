@@ -19,15 +19,36 @@ export class MailService {
 
     }
 
-    async sendInvite(email, token) {
+    async sendInvite(email:string, token:string) {
         const inviteLink = `${process.env.INVITE_LINK}/auth/signup?token=${token}`
 
         const mail = {
             from: `WORKSPACE ADMIN <${process.env.MAIL_USER}>`,
             to: email,
-            subject: 'You have been invited to join workspace',
+            subject: 'You\'ve been invited to join the workspace as member',
             html: `
             <a href=${inviteLink}>${inviteLink}</a>
+                `
+        }
+        try {
+            return await this.transporter.sendMail(mail)
+
+
+        } catch (error) {
+            throw error
+        }
+    }
+
+    async sendWorkspaceInvite(email:string,token:string){
+
+        const url=`${process.env.INVITE_LINK}/workspace/invite?token=${token}`
+
+        const mail = {
+            from: `WORKSPACE ADMIN <${process.env.MAIL_USER}>`,
+            to: email,
+            subject:"Workspace Invitation",
+            html: `
+            <a href=${url}>${url}</a>
                 `
         }
         try {

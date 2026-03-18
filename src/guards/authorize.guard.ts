@@ -27,12 +27,12 @@ export class AuthorizeGuard implements CanActivate {
             return true
         }
 
+        
         //role check
         const roleCheck = this.reflector.getAllAndOverride('roles', [
             context.getHandler(),
             context.getClass()
         ])
-
 
         //extract request from context
         const request: Request = context.switchToHttp().getRequest()
@@ -45,32 +45,32 @@ export class AuthorizeGuard implements CanActivate {
             throw new UnauthorizedException('No token provided')
         }
 
-        let payload:any;
+        let payload: any;
         try {
             //verify token
-                payload = await this.jwtService.verifyAsync(token, {
-                    secret: this.authConfiguration.secret,
-                    issuer: this.authConfiguration.issuer,
-                    audience: this.authConfiguration.audience,
-                }
+            payload = await this.jwtService.verifyAsync(token, {
+                secret: this.authConfiguration.secret,
+                issuer: this.authConfiguration.issuer,
+                audience: this.authConfiguration.audience,
+            }
             )
             request[REQ_USER] = payload
 
         } catch (error) {
-            if(error.name == 'TokenExpiredError'){
+            if (error.name == 'TokenExpiredError') {
                 throw new UnauthorizedException('Token Expired.Please login again!')
             }
-            if(error.name == 'JsonWebTokenError'){
+            if (error.name == 'JsonWebTokenError') {
                 throw new UnauthorizedException('Invalid token!')
             }
             throw new UnauthorizedException("Authentication failed")
         }
 
-        if(!payload || !payload.role){
+        if (!payload || !payload.role) {
             throw new UnauthorizedException('Invalid token payload')
         }
-        if (roleCheck &&  !roleCheck.includes(payload.role)) {
-            throw new ForbiddenException(`Admin access only!`)
+        if (roleCheck && !roleCheck.includes(payload.role)) {
+            throw new ForbiddenException(`Access denied!`)
         }
 
         return true

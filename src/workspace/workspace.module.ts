@@ -5,14 +5,18 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Workspace } from './entity/workspace.entity';
 import { JwtModule } from '@nestjs/jwt';
 import authConfig from 'src/config/auth.config';
+import { WorkspaceMember } from './entity/workspace-member.entity';
+import { UserModule } from 'src/user/user.module';
+import { WorkspaceInvite } from './entity/workspace-invite.entity';
 
 @Module({
   controllers: [WorkspaceController],
   providers: [WorkspaceService],
   imports: [
-    TypeOrmModule.forFeature([Workspace]),
-    JwtModule.registerAsync(authConfig.asProvider())
-
-  ]
+    TypeOrmModule.forFeature([Workspace,WorkspaceInvite,WorkspaceMember]),
+    JwtModule.registerAsync(authConfig.asProvider()),
+    UserModule
+  ],
+  exports:[WorkspaceService]
 })
 export class WorkspaceModule { }
