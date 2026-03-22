@@ -12,6 +12,7 @@ import { AuthModule } from './auth/auth.module';
 import { WorkspaceModule } from './workspace/workspace.module';
 import authConfig from './config/auth.config';
 import { MailModule } from './mail/mail.module';
+import { ChatModule } from './chat/chat.module';
 dotenv.config()
 
 @Module({
@@ -44,7 +45,9 @@ dotenv.config()
 
     WorkspaceModule,
 
-    MailModule
+    MailModule,
+
+    ChatModule
 
   ],
   controllers: [AppController],
