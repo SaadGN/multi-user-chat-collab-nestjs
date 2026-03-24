@@ -17,13 +17,7 @@ export class Message {
         nullable: false
     })
     senderId:number
-
-    @Column({
-        type: "int",
-        nullable: false
-    })
-    receiverId:number
-
+    
     @Column({
         type: "varchar",
         nullable: false
