@@ -198,4 +198,15 @@ export class WorkspaceService {
             throw error
         }
     }
+
+    async isUserInWorkspace(userId:number,workspaceId:number) :Promise<boolean>{
+        const member = await this.workspaceMemberRepository.findOne({
+            where:{
+                user:{id:userId},
+                workspace:{id:workspaceId}
+            },
+        });
+
+        return !!member
+    }
 }
