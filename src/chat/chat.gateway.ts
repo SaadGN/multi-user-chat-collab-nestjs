@@ -62,6 +62,10 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
             console.log(`User ${userId} joined workpsace ${data.workspaceId}`);
 
+            const messages = await this.chatService.getMessages(data.workspaceId);
+            client.emit('previousMessages',messages);
+            // console.log(messages)
+
             client.emit('joinedWorkspace', room)
         } catch (error) {
             throw new WsException(error.message)
