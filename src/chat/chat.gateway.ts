@@ -37,7 +37,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
             }
 
 
-            console.log(`User connected : ${decoded.id}`);
+            console.log(`User connected : ${decoded.sub}`);
         } catch (error) {
             client.disconnect();
         }
