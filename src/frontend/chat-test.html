@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Workspace Chat Test</title>
+  <!-- Socket.IO client -->
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+</head>
+
+<body>
+  <h2>Workspace Chat Test</h2>
+
+  <label>User Token:</label>
+  <input id="token" placeholder="Paste JWT here" style="width: 400px;">
+  <button onclick="connectSocket()">Connect</button>
+
+  <hr>
+
+  <label>Workspace ID:</label>
+  <input id="workspaceId" placeholder="Enter workspace ID" style="width: 100px;">
+  <button onclick="joinWorkspace()">Join Workspace</button>
+
+  <hr>
+
+  <input id="msg" placeholder="Type message here" style="width: 300px;">
+  <button onclick="sendMessage()">Send</button>
+
+  <ul id="chat" style="list-style: none;"></ul>
+
+  <script>
+    let socket;
+
+    // Step 1: Connect with JWT token
+    function connectSocket() {
+      const token = document.getElementById('token').value;
+      if (!token) return alert('Please enter JWT token');
+
+      socket = io('http://localhost:3000', {
+        auth: { token }
+      });
+
+      socket.on('connect', () => {
+        console.log('Connected!', socket.id);
+        alert('Connected!');
+      });
+
+      socket.on('disconnect', (reason) => {
+        console.log('Disconnected:', reason);
+        alert('Disconnected: ' + reason);
+      });
+
+      // Step 2: Listen to server events
+      socket.on('joinedWorkspace', (data) => {
+        console.log('Joined workspace:', data);
+        alert(`Joined workspace ${data}`);
+      });
+
+      socket.on('newMessage', (data) => {
+        console.log('New message:', data);
+        const li = document.createElement('li');
+        li.innerText = `${data.senderId}: ${data.message}`;
+        document.getElementById('chat').appendChild(li);
+      });
+
+      socket.on('previousMessages', (messages) => {
+        const chat = document.getElementById('chat');
+        chat.innerHTML = '';
+
+        messages.forEach(msg => {
+          const li = document.createElement('li');
+          li.innerText = `${msg.senderId}: ${msg.message}`;
+          chat.appendChild(li);
+        });
+      });
+    }
+
+    // Step 3: Join workspace
+    function joinWorkspace() {
+      const workspaceId = document.getElementById('workspaceId').value;
+      if (!socket) return alert('Connect first');
+      if (!workspaceId) return alert('Enter workspace ID');
+
+      socket.emit('joinWorkspace', { workspaceId: parseInt(workspaceId) });
+    }
+
+    // Step 4: Send message
+    function sendMessage() {
+      const workspaceId = document.getElementById('workspaceId').value;
+      const message = document.getElementById('msg').value;
+      if (!socket) return alert('Connect first');
+      if (!workspaceId) return alert('Join workspace first');
+      if (!message) return alert('Enter message');
+
+      socket.emit('sendMessage', { workspaceId: parseInt(workspaceId), message });
+      document.getElementById('msg').value = '';
+    }
+  </script>
+</body>
+
+</html>
