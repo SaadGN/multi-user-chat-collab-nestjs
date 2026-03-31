@@ -39,7 +39,7 @@ export class AdminService {
         })
 
         if (existingUser) {
-            console.log("ADMIN alreasy consists")
+            console.log("ADMIN alreasy exists")
             return
         }
 
