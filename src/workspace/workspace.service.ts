@@ -7,6 +7,9 @@ import { UpdateWokspaceDto } from './dtos/update-workspace.dto';
 import { WorkspaceMember } from './entity/workspace-member.entity';
 import { UserService } from 'src/user/user.service';
 import { WorkspaceInvite } from './entity/workspace-invite.entity';
+import { randomBytes } from 'crypto';
+import { MailService } from 'src/mail/mail.service';
+import { CreateWorkspaceInviteDto } from 'src/workspace/dtos/create-workspace-invite.dto';
 
 @Injectable()
 export class WorkspaceService {
@@ -20,7 +23,11 @@ export class WorkspaceService {
         @InjectRepository(WorkspaceMember)
         private workspaceMemberRepository: Repository<WorkspaceMember>,
 
-        private userService:UserService
+        private userService: UserService,
+
+        private readonly mailService: MailService,
+
+
 
     ) { }
 
@@ -156,7 +163,7 @@ export class WorkspaceService {
         }
     }
 
-    async acceptWorkspaceInvite(token: string,authUser:any) {
+    async acceptWorkspaceInvite(token: string, authUser: any) {
         try {
             const invite = await this.workspaceInviteRepository.findOne({
                 where: { token }
@@ -171,7 +178,7 @@ export class WorkspaceService {
                 throw new BadRequestException(`Invite expired!`)
             }
 
-            if(invite.email !== authUser.email){
+            if (invite.email !== authUser.email) {
                 throw new BadRequestException(`Invite does not belong to user with email ${invite.email}`)
             }
 
@@ -199,14 +206,76 @@ export class WorkspaceService {
         }
     }
 
-    async isUserInWorkspace(userId:number,workspaceId:number) :Promise<boolean>{
+    async isUserInWorkspace(userId: number, workspaceId: number): Promise<boolean> {
         const member = await this.workspaceMemberRepository.findOne({
-            where:{
-                user:{id:userId},
-                workspace:{id:workspaceId}
+            where: {
+                user: { id: userId },
+                workspace: { id: workspaceId }
             },
         });
 
         return !!member
     }
+
+    async sendWorkspaceInvite(inviteDto: CreateWorkspaceInviteDto) {
+        try {
+            const { email, workspaceId } = inviteDto;
+
+            const existingUser = await this.userService.findUserByMail(email)
+
+            
+
+            if (!existingUser) {
+                throw new BadRequestException(`User with email ${email} does not exist`)
+            }
+
+            const workspace = await this.findWorkspaceById(workspaceId)
+
+            if (!workspace) {
+                throw new BadRequestException(`Workspace not found`)
+            }
+
+            const existingInvite = await this.workspaceInviteRepository.findOne({
+                where: { email, workspaceId }
+            })
+            if (existingInvite && existingInvite.expiresAt > new Date()) {
+                throw new BadRequestException(`Invite already sent to email ${email}`)
+            }
+
+            const existingMembership = await this.workspaceMemberRepository.findOne({
+                where: {
+                    user: { id: existingUser.id },
+                    workspace: { id: workspaceId }
+                }
+            });
+
+            if (existingMembership) {
+                throw new BadRequestException(
+                    `User is already a member of this workspace`
+                );
+            }
+
+            const token = randomBytes(32).toString('hex')
+            const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000)
+
+            const invite = this.workspaceInviteRepository.create({
+                email,
+                token,
+                workspaceId,
+                isAccepted: false,
+                expiresAt
+            })
+
+            await this.workspaceInviteRepository.save(invite)
+            await this.mailService.sendWorkspaceInvite(email, token)
+
+            return {
+                success: true,
+                message: `Workspace invitation mail sent successfully!`
+            }
+        } catch (error) {
+            throw error
+        }
+    }
+
 }
