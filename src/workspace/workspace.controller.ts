@@ -6,6 +6,7 @@ import { AuthorizeGuard } from 'src/guards/authorize.guard';
 import { AdminDecorator } from 'src/auth/decorators/admin.decorator';
 import { MemberDecorator } from 'src/auth/decorators/member.decorator';
 import { REQ_USER } from 'src/constants/user.constant';
+import { CreateWorkspaceInviteDto } from './dtos/create-workspace-invite.dto';
 
 
 @Controller('workspace')
@@ -59,4 +60,11 @@ export class WorkspaceController {
         return this.workspaceService.updateWorkspace(id, updateWorkspaceDto)
     }
 
+
+    @UseGuards(AuthorizeGuard)
+    @AdminDecorator()
+    @Post('invite')
+    async sendInvite(@Body() inviteDto:CreateWorkspaceInviteDto){
+        return await this.workspaceService.sendWorkspaceInvite(inviteDto);
+    }
 }

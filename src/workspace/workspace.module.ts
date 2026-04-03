@@ -8,6 +8,7 @@ import authConfig from 'src/config/auth.config';
 import { WorkspaceMember } from './entity/workspace-member.entity';
 import { UserModule } from 'src/user/user.module';
 import { WorkspaceInvite } from './entity/workspace-invite.entity';
+import { MailModule } from 'src/mail/mail.module';
 
 @Module({
   controllers: [WorkspaceController],
@@ -15,7 +16,8 @@ import { WorkspaceInvite } from './entity/workspace-invite.entity';
   imports: [
     TypeOrmModule.forFeature([Workspace,WorkspaceInvite,WorkspaceMember]),
     JwtModule.registerAsync(authConfig.asProvider()),
-    UserModule
+    UserModule,
+    MailModule
   ],
   exports:[WorkspaceService]
 })
